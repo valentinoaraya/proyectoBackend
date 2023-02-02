@@ -8,7 +8,7 @@ class ProductManager{
         const product = {
             title,
             description,
-            price,
+            price: `$ ${price}`,
             thumbail,
             code,
             stock,
@@ -40,21 +40,20 @@ class ProductManager{
             return "Not Found"
         }
     }
-
 }
 
 const manager1 = new ProductManager()
 const manager2 = new ProductManager()
 
 // console.log("----- MANAGER 1 -----")
-manager1.addProduct("Auriculares Redragon", "blablabla",12000,"ruta de imagen",0,  10)
-manager1.addProduct("Teclado HyperX", "blablabla", 33000, "ruta de imagen", 1, 15)
-manager1.addProduct("Mouse Logitech", "blablabal", 19000, "ruta de imagen",2,7)
+manager1.addProduct("Auriculares Redragon", "Auriculares de alta calidad perfectos para el gaming." , 12000, "ruta de imagen", 0, 10)
+manager1.addProduct("Teclado Hyper X", "Teclado 75% con luz RGB.", 33000, "ruta de imagen", 1, 15)
+manager1.addProduct("Mouse Logitech", "Mouse Logitech inalámbrico", 19000, "ruta de imagen",2,7)
 console.log(manager1.getProductById(1))
 // console.log(manager1.getProducts())
 
 // console.log("----- MANAGER 2 -----")
-// manager2.addProduct("Gorra Adidas", "una alfombra muy peluda", 13000, "any", 12, 80)
-// manager2.addProduct("Remera Nike", "remera nike cómoda", 3000, "thumb", 52, 40)
+// manager2.addProduct("Gorra Adidas", "Gorra Adidas blanca.", 13000, "ruta de imagen", 12, 80)
+// manager2.addProduct("Remera Nike", "Remera Nike negra.", 23000, "ruta de imagen", 52, 40)
 // console.log(manager2.getProducts())
 
