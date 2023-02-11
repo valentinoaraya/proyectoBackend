@@ -3,7 +3,6 @@ const fs = require("fs")
 class ProductManager{
     
     #path = ""
-    #nextID = 0
 
     constructor(path){
         this.#path = path
@@ -17,9 +16,22 @@ class ProductManager{
             return []
         }
     }
+
+    async getIDs(){
+        let products = await this.getProducts()
+        let ids = products.map( prods => prods.id)
+        let mayorID = Math.max(...ids)
+        if (mayorID === -Infinity) {
+            return 0
+        } else {
+            return mayorID
+        }
+    }
     
     async addProduct(title, description, price, thumbail, code, stock){
 
+        let mayorID = await this.getIDs()
+        
         const product = {
             title,
             description,
@@ -27,7 +39,7 @@ class ProductManager{
             thumbail,
             code,
             stock,
-            id : this.#nextID
+            id : ++mayorID
         }
 
         let products = await this.getProducts()
@@ -44,11 +56,10 @@ class ProductManager{
         products = [...products, product]
         console.log(`${product.title} cargado correctamente.`)
         await fs.promises.writeFile(this.#path, JSON.stringify(products))
-        this.#nextID++
     }
 
     //Para modificar un producto debemos pasar como primer parámetro el ID, y como segundo parámetro un objeto con las propiedades modificadas.
-    async modifyProduct(id, propModify){
+    async updateProduct(id, propModify){
         let products = await this.getProducts()
         let productModify = products.find(i => i.id === id)
 
@@ -69,6 +80,7 @@ class ProductManager{
             }
         }
         
+        // Modificamos el producto y filtramos un array sin el producto modificado para agreagarlo y que no se repita.
         productModify = {...productModify, ...propModify}
         let newArray = products.filter( prods => prods.id !== id)
         newArray = [...newArray, productModify]
@@ -82,11 +94,11 @@ class ProductManager{
         if (element){
             return element
         } else {
-            return "Not Found. No existe ningún producto con ese ID."
+            throw new Error('No se encuentra producto con ese ID.')
         }
     }
 
-    async deleteElement(id){
+    async deleteProduct(id){
         let products = await this.getProducts()
         let newArray = products.filter(prods => prods.id !== id)
         await fs.promises.writeFile(this.#path, JSON.stringify(newArray))
@@ -97,11 +109,10 @@ class ProductManager{
 
 async function main(){
     const manager1 = new ProductManager('./products.json')
-    //await manager1.addProduct('producto1','descripcion producto1',1234,'thumbail','code1234', 43)
-    //await manager1.addProduct('producto2', 'descripcion producto2', 1234, 'thumbail', 'code1234565', 23)
-    //await manager1.addProduct('producto3', 'descripcion producto3', 1234, 'thumbail', 'code12342565', 23)
-    //await manager1.modifyProduct(2, {description: 'Descripción nueva para id 2', title: 'billetera de beatles'})
-    //await manager1.deleteElement(2)
+    // await manager1.addProduct("Silla Gamer", "Silla gamer muy cómoda de alta calidad.", 43000, "thumbail", "code1", 10)
+    // await manager1.addProduct("Teclado Redragon", "Teclado Redragron 60% ideal para el gaming.", 10000, "thumbail", "code2", 20)
+    // await manager1.addProduct("Procesador Ryzen 5 3500u", "Procesador para computadora.", 69000, "thumbail", "code3", 30)
+    // await manager1.addProduct("Mouse gamer inaámbrico", "Mouse gamer con rgb.", 19000, "thumbail", "code4", 40)
 }
 
 main()
