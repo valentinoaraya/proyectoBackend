@@ -103,6 +103,12 @@ class ProductManager{
 
     async deleteProduct(id){
         let products = await this.getProducts()
+        let chek = products.some(prod => prod.id === id)
+        
+        if (!chek){
+            throw new Error('No existe producto con ese ID.')
+        }
+
         let newArray = products.filter(prods => prods.id !== id)
         await fs.promises.writeFile(this.#path, JSON.stringify(newArray))
         console.log('Producto eliminado con éxito')
@@ -115,7 +121,7 @@ async function main(){
     // await manager1.addProduct("Silla Gamer", "Silla gamer muy cómoda de alta calidad.", 43000, "thumbail", "code1", 10)
     // await manager1.addProduct("Teclado Redragon", "Teclado Redragron 60% ideal para el gaming.", 10000, "thumbail", "code2", 20)
     // await manager1.addProduct("Procesador Ryzen 5 3500u", "Procesador para computadora.", 69000, "thumbail", "code3", 30)
-    // await manager1.addProduct("Mouse gamer inaámbrico", "Mouse gamer con rgb.", 19000, "thumbail", "code4", 40)
+    //await manager1.addProduct("Mouse gamer inaámbrico", "Mouse gamer con rgb.", 19000, "thumbail", "code4", 40)
 }
 
 main()
