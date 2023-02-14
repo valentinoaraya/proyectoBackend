@@ -103,9 +103,9 @@ class ProductManager{
 
     async deleteProduct(id){
         let products = await this.getProducts()
-        let chek = products.some(prod => prod.id === id)
+        let check = products.some(prod => prod.id === id)
         
-        if (!chek){
+        if (!check){
             throw new Error('No existe producto con ese ID.')
         }
 
