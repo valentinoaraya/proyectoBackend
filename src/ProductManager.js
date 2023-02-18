@@ -1,4 +1,4 @@
-const fs = require("fs")
+import fs from "fs"
 
 class ProductManager{
     
@@ -115,13 +115,4 @@ class ProductManager{
     }
 }
 
-
-async function main(){
-    const manager1 = new ProductManager('./products.json')
-    // await manager1.addProduct("Silla Gamer", "Silla gamer muy cómoda de alta calidad.", 43000, "thumbail", "code1", 10)
-    // await manager1.addProduct("Teclado Redragon", "Teclado Redragron 60% ideal para el gaming.", 10000, "thumbail", "code2", 20)
-    // await manager1.addProduct("Procesador Ryzen 5 3500u", "Procesador para computadora.", 69000, "thumbail", "code3", 30)
-    //await manager1.addProduct("Mouse gamer inaámbrico", "Mouse gamer con rgb.", 19000, "thumbail", "code4", 40)
-}
-
-main()
+export default ProductManager
