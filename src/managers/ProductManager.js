@@ -12,7 +12,8 @@ class ProductManager{
         try{
             const products = await fs.promises.readFile(this.#path, "utf-8")
             return JSON.parse(products)
-        }catch{
+        }catch(err){
+            console.log(err)
             return []
         }
     }
@@ -26,39 +27,46 @@ class ProductManager{
         if (mayorID === -Infinity) {
             return 0
         } else {
-            return mayorID
+            return ++mayorID
         }
     }
     
-    async addProduct(title, description, price, thumbail, code, stock){
+    async addProduct(title, description, price, thumbail, code, stock, status, category){
 
-        // Al último ID le sumo 1 y se lo asigno a la propiedad id del objeto.
-        let mayorID = await this.getIDs()
+        try{
+            // Al último ID le sumo 1 y se lo asigno a la propiedad id del objeto.
+            let mayorID = await this.getIDs()
+            
+            const product = {
+                id : mayorID,
+                title,
+                description,
+                price,
+                thumbail,
+                code,
+                stock,
+                status,
+                category
+            }
+
+            let products = await this.getProducts()
+            let verificar = Object.values(product)
+            let sameCode = products.find( prod => prod.code === code)
+
+            if (verificar.includes(undefined)){
+                throw new Error(`El producto ${product.title} NO ha sido cargado, debe completar todos los datos.`)
+            }
+            if(sameCode){
+                throw new Error(`El producto ${product.title} NO ha sido cargado ya que la propiedad "code" está repetida, ${sameCode.title} tiene el mismo valor.`)
+            }
         
-        const product = {
-            title,
-            description,
-            price,
-            thumbail,
-            code,
-            stock,
-            id : ++mayorID
+            products = [...products, product]
+            console.log(`${product.title} cargado correctamente.`)
+            await fs.promises.writeFile(this.#path, JSON.stringify(products))
+        }catch(err){
+            throw new Error(err)
         }
-
-        let products = await this.getProducts()
-        let verificar = Object.values(product)
-        let sameCode = products.find( prod => prod.code === code)
-
-        if (verificar.includes(undefined)){
-            throw new Error(`El producto ${product.title} NO ha sido cargado, debe completar todos los datos.`)
-        }
-        if(sameCode){
-            throw new Error(`El producto ${product.title} NO ha sido cargado ya que la propiedad "code" está repetida, ${sameCode.title} tiene el mismo valor.`)
-        }
-    
-        products = [...products, product]
-        console.log(`${product.title} cargado correctamente.`)
-        await fs.promises.writeFile(this.#path, JSON.stringify(products))
+        
     }
 
     //Para modificar un producto debemos pasar como primer parámetro el ID, y como segundo parámetro un objeto con las propiedades modificadas.
@@ -81,6 +89,14 @@ class ProductManager{
             if (sameCode){
                 throw new Error('No es posible modificar la propiedad code por una que ya exista.')
             }
+        }
+
+        if (Object.keys(propModify).includes('price')){
+            propModify.price = parseInt(propModify.price)
+        }
+
+        if (Object.keys(propModify).includes('stock')){
+            propModify.stock = parseInt(propModify.stock)
         }
         
         // Modificamos el producto y filtramos un array sin el producto modificado para agreagarlo y que no se repita.
