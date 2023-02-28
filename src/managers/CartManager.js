@@ -57,7 +57,7 @@ class CartManager {
     async addProductToCart(prod, cartID){
         try{
             let carts = await this.getCarts()
-            let cart = carts.find( c => c.id === cartID)
+            let cart = await this.getCartProducts(cartID)
 
             //Verifico si el producto existe en el carrito
             let prodInCart = cart.products.find( p => p.id === prod.id)
@@ -90,9 +90,49 @@ class CartManager {
                     cart
                 ]
                 await fs.promises.writeFile(this.#path, JSON.stringify(newCarts))
-
             }
             
+        }catch(err){
+            throw new Error(err)
+        }
+    }
+
+    async deleteProductInCart(cartID, productID){
+        try{
+            let carts = await this.getCarts()
+            let cart = await this.getCartProducts(cartID)
+
+            let prodInCart = cart.products.find( p => p.id === productID)
+
+            if(!prodInCart){
+                throw new Error("No existe producto con ese ID en este carrito.")
+            }
+
+            if (prodInCart.quantity > 1){
+                prodInCart.quantity -= 1
+                let filterProducts = cart.products.filter( p => p.id !== prodInCart.id) 
+                filterProducts = [
+                    ...filterProducts,
+                    prodInCart
+                ]
+                cart.products = filterProducts
+                let newCarts = carts.filter( c => c.id !== cartID)
+                newCarts = [
+                    ...newCarts,
+                    cart
+                ]
+                await fs.promises.writeFile(this.#path, JSON.stringify(newCarts))
+            } else {
+                let newCartProducts = cart.products.filter(p => p.id !== productID)
+                cart.products = newCartProducts
+                let newCarts = carts.filter( c => c.id !== cartID)
+                newCarts = [
+                    ...newCarts,
+                    cart
+                ]
+                await fs.promises.writeFile(this.#path, JSON.stringify(newCarts))
+            }
+
         }catch(err){
             throw new Error(err)
         }

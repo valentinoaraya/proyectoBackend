@@ -33,12 +33,12 @@
         "category": "Auriculares"
     },
     {
-        "id": 3,
+        "id": 4,
         "title": "Monitor Dell 4k FHD",
         "description": "Monitor Dell 32 pulgadas 4k",
         "price": 80000,
         "thumbail": [],
-        "code": "code7",
+        "code": "code9",
         "stock": 11,
         "status": true,
         "category": "Monitores"

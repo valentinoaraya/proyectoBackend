@@ -36,4 +36,16 @@ cartsRouter.post("/:cid/products/:pid", async (req,res)=>{
     }
 })
 
+cartsRouter.delete("/:cid/products/:pid", async (req, res)=>{
+    try{
+        const {cid, pid} = req.params
+        const prodID = parseInt(pid)
+        const cartID = parseInt(cid)
+        await cartManager.deleteProductInCart(cartID, prodID)
+        res.send({status: "succes", payload: "Producto eliminado."})
+    }catch(err){
+        res.status(404).send({status: 'error', error: `${err}`})
+    }
+})
+
 export default cartsRouter
