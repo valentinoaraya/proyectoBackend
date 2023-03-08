@@ -13,7 +13,6 @@ productsRouter.get("/", async (req, res)=>{
             const productsLimit = products.slice(0,limit)
             return res.send({status: "succes", payload: productsLimit})
         }
-    
         res.send({status: "succes", payload: products})
     } catch (err){
         res.status(404).send({status: "error", error: `${err}`})
@@ -35,7 +34,7 @@ productsRouter.post("/", async (req,res)=>{
         // En el body no envío "thumbail" ni "status", los defino por defecto hasta que tenga que cambiarlo
         const {title, description, price, thumbail=[], code, stock, status=true, category} = req.body
         await manager.addProduct(title, description, parseInt(price), thumbail, code, parseInt(stock), status, category)
-
+        req.io.emit("new-product", req.body)
         res.send({status: "succes", payload: req.body})
     }catch(err){
         res.status(404).send({status: "error", error: `${err}`})
@@ -47,6 +46,9 @@ productsRouter.put("/:pid", async (req, res)=>{
         const {pid} = req.params
         const id = parseInt(pid)
         await manager.updateProduct(id, req.body)
+
+        const products = await manager.getProducts()
+        req.io.emit("update-product", products)
     
         res.send({status: "succes", payload: await manager.getProductById(id)})
     }catch(err){
@@ -59,6 +61,9 @@ productsRouter.delete("/:pid", async(req, res)=>{
         const {pid} = req.params
         const id = parseInt(pid)
         await manager.deleteProduct(id)
+
+        const products = await manager.getProducts()
+        req.io.emit("delete-product", products)
 
         res.send({status: "succes", payload: "Producto eliminado"})
     } catch(err){
