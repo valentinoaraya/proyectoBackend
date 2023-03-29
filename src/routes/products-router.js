@@ -22,7 +22,7 @@ productsRouter.get("/", async (req, res)=>{
 productsRouter.get("/:pid", async (req, res)=>{
     try{
         const {pid} = req.params
-        const product = await manager.getProductById(parseInt(pid))
+        const product = await manager.getProductById(pid)
         res.send({status: "succes", payload: product})
     } catch(err) {
         res.status(404).send({status: "error", error: `${err}`})
@@ -32,7 +32,7 @@ productsRouter.get("/:pid", async (req, res)=>{
 productsRouter.post("/", async (req,res)=>{
     try{
         // En el body no envío "thumbail" ni "status", los defino por defecto hasta que tenga que cambiarlo
-        const {title, description, price, thumbail=[], code, stock, status=true, category} = req.body
+        const {title, description, price, thumbail, code, stock, status, category} = req.body
         await manager.addProduct(title, description, parseInt(price), thumbail, code, parseInt(stock), status, category)
         req.io.emit("new-product", req.body)
         res.send({status: "succes", payload: req.body})
@@ -44,8 +44,7 @@ productsRouter.post("/", async (req,res)=>{
 productsRouter.put("/:pid", async (req, res)=>{
     try{
         const {pid} = req.params
-        const id = parseInt(pid)
-        await manager.updateProduct(id, req.body)
+        await manager.updateProduct(pid, req.body)
 
         const products = await manager.getProducts()
         req.io.emit("update-product", products)
@@ -59,8 +58,7 @@ productsRouter.put("/:pid", async (req, res)=>{
 productsRouter.delete("/:pid", async(req, res)=>{
     try{
         const {pid} = req.params
-        const id = parseInt(pid)
-        await manager.deleteProduct(id)
+        await manager.deleteProduct(pid)
 
         const products = await manager.getProducts()
         req.io.emit("delete-product", products)

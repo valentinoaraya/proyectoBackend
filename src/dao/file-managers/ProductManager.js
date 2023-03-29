@@ -20,9 +20,7 @@ class ProductManager{
 
     async getIDs(){
         let products = await this.getProducts()
-        // Genero un array con todos los id's.
         let ids = products.map( prods => prods.id)
-        // Saco el id mayor y lo retorno.
         let mayorID = Math.max(...ids)
         if (mayorID === -Infinity) {
             return 0
@@ -34,7 +32,6 @@ class ProductManager{
     async addProduct(title, description, price, thumbail, code, stock, status, category){
 
         try{
-            // Al último ID le sumo 1 y se lo asigno a la propiedad id del objeto.
             let mayorID = await this.getIDs()
             
             const product = {
@@ -69,7 +66,6 @@ class ProductManager{
         
     }
 
-    //Para modificar un producto debemos pasar como primer parámetro el ID, y como segundo parámetro un objeto con las propiedades modificadas.
     async updateProduct(id, propModify){
         let products = await this.getProducts()
         let productModify = products.find(i => i.id === id)

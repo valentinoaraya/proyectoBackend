@@ -16,7 +16,7 @@ cartsRouter.post("/", async (req,res)=>{
 cartsRouter.get("/:cid", async (req, res)=>{
     try{
         const {cid} = req.params
-        let cart = await cartManager.getCartProducts(parseInt(cid))
+        let cart = await cartManager.getCartProducts(cid)
         res.send({status: "succes", payload: cart})
     }catch(err){
         res.status(404).send({status: "error", error: `${err}`})
@@ -26,10 +26,8 @@ cartsRouter.get("/:cid", async (req, res)=>{
 cartsRouter.post("/:cid/products/:pid", async (req,res)=>{
     try{
         const {cid, pid} = req.params
-        const prodID = parseInt(pid)
-        const cartID = parseInt(cid)
-        let product = await manager.getProductById(prodID)
-        await cartManager.addProductToCart(product, cartID)
+        let product = await manager.getProductById(pid)
+        await cartManager.addProductToCart(product, cid)
         res.send({status: "succes", payload: await cartManager.getCartProducts(cartID)})
     }catch(err){
         res.status(404).send({status: "error", error: `${err}`})
@@ -39,9 +37,7 @@ cartsRouter.post("/:cid/products/:pid", async (req,res)=>{
 cartsRouter.delete("/:cid/products/:pid", async (req, res)=>{
     try{
         const {cid, pid} = req.params
-        const prodID = parseInt(pid)
-        const cartID = parseInt(cid)
-        await cartManager.deleteProductInCart(cartID, prodID)
+        await cartManager.deleteProductInCart(cid, pid)
         res.send({status: "succes", payload: "Producto eliminado."})
     }catch(err){
         res.status(404).send({status: 'error', error: `${err}`})
