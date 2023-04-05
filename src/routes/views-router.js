@@ -1,5 +1,5 @@
 import { json, Router } from "express";
-import { manager } from "../app.js";
+import { manager, cartManager } from "../app.js";
 
 const viewsRouter = Router()
 viewsRouter.use(json())
@@ -20,6 +20,20 @@ viewsRouter.get("/real-time-products", async (req, res) => {
 
 viewsRouter.get("/chat", async (req, res) => {
     res.render("chat")
+})
+
+viewsRouter.get("/product/:pid", async (req,res)=>{
+    const {pid} = req.params
+    const product = await manager.getProductById(pid)
+    res.render("product", product)
+})
+
+viewsRouter.get("/carts/:cid", async (req,res)=>{
+    const {cid} = req.params
+    const cart = await cartManager.getCartProducts(cid)
+    const cartProducts = cart.products
+    console.log(cartProducts)
+    res.render("cart", {cartProducts})
 })
 
 export default viewsRouter

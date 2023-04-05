@@ -29,7 +29,7 @@ export default class CartManager {
 
     async getCartProducts(id) {
         try {
-            const cart = await cartModel.findById(id).populate("products.product")
+            const cart = await cartModel.findById(id).populate("products.product").lean()
             return cart
         } catch (err) {
             throw new Error(err)
