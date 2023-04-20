@@ -12,7 +12,7 @@ productsRouter.get("/", async (req, res) => {
 
         res.send({ status: "succes", payload: products })
     } catch (err) {
-        res.status(404).send({ status: "error", error: `${err}` })
+        res.status(404).send({ status: "error", error: err.message })
     }
 })
 
@@ -34,7 +34,7 @@ productsRouter.post("/", async (req, res) => {
         req.io.emit("new-product", req.body)
         res.send({ status: "succes", payload: req.body })
     } catch (err) {
-        res.status(404).send({ status: "error", error: `${err}` })
+        res.status(404).send({ status: "error", error: err.message })
     }
 })
 
@@ -50,7 +50,7 @@ productsRouter.put("/:pid", async (req, res) => {
 
         res.send({ status: "succes", payload: await manager.getProductById(id) })
     } catch (err) {
-        res.status(404).send({ status: "error", error: `${err}` })
+        res.status(404).send({ status: "error", error: err.message })
     }
 })
 
@@ -66,7 +66,7 @@ productsRouter.delete("/:pid", async (req, res) => {
 
         res.send({ status: "succes", payload: "Producto eliminado" })
     } catch (err) {
-        res.status(404).send({ status: "error", error: `${err}` })
+        res.status(404).send({ status: "error", error: err.message })
     }
 })
 
